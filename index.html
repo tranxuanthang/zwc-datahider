@@ -1,0 +1,437 @@
+<!doctype html>
+<html class="no-js" lang="">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>ZWC Datahider</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+
+    </style>
+    <!-- Place favicon.ico in the root directory -->
+
+  </head>
+  <body class="bg-gray-300" x-data="data()">
+    <nav class="flex justify-center bg-white mb-6">
+      <div class="flex w-full lg:max-w-screen-lg xl:max-w-screen-xl px-2 py-6">
+        <div class="text-lg font-bold">ZWC Datahider</div>
+      </div>
+    </nav>
+
+    <div class="flex justify-center">
+      <div class="flex flex-col md:flex-row w-full md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl px-2">
+        <aside class="mr-6 w-full md:w-64 mb-6 flex flex-row md:flex-col">
+          <a @click="tab = 'hide'" class="flex-grow md:flex-initial md:flex-0 text-center md:text-left">
+            <div class="px-4 py-2 text-gray-700" :class="{ 'bg-gray-200 rounded-lg text-gray-800 font-bold': tab == 'hide' }">Dấu dữ liệu</div>
+          </a>
+
+          <a @click="tab = 'encrypt'" class="flex-grow md:flex-initial md:flex-0 text-center md:text-left">
+            <div class="px-4 py-2 text-gray-700" :class="{ 'bg-gray-200 rounded-lg text-gray-800 font-bold': tab == 'encrypt' }">Dấu & mã hóa</div>
+          </a>
+
+          <a @click="tab = 'reveal'" class="flex-grow md:flex-initial md:flex-0 text-center md:text-left">
+            <div class="px-4 py-2 text-gray-700" :class="{ 'bg-gray-200 rounded-lg text-gray-800 font-bold': tab == 'reveal' }">Hiện dữ liệu</div>
+          </a>
+
+          <a @click="tab = 'decrypt'" class="flex-grow md:flex-initial md:flex-0 text-center md:text-left">
+            <div class="px-4 py-2 text-gray-700" :class="{ 'bg-gray-200 rounded-lg text-gray-800 font-bold': tab == 'decrypt' }">Giải mã</div>
+          </a>
+        </aside>
+
+        <main class="w-full flex-1 bg-white rounded-lg">
+          <div x-show="tab == 'hide'">
+            <h1 class="px-4 py-4 text-xl font-bold block border-b border-gray-300">Dấu dữ liệu</h1>
+
+            <div class="m-4">
+              <div class="mb-4">
+                <label class="block mr-2" for="i00">Dữ liệu cần dấu (fingerprint, tin nhắn bí mật,...):</label>
+                <input x-model="hide.secretData" class="px-2 py-2 bg-gray-200 text-gray-800 rounded-lg w-64" id="i00" type="text" placeholder="Tấn công lúc bình minh">
+              </div>
+
+              <div class="mb-4">
+                <label class="block mr-2" for="i01">Nội dung để ẩn giấu dữ liệu vào:</label>
+                <textarea x-model="hide.content" class="w-full h-32 px-2 py-2 bg-gray-200 text-gray-800 rounded-lg" id="i01" placeholder="Hôm nay quả thực là một ngày đẹp trời :3 :3"></textarea>
+              </div>
+
+              <div class="mb-4">
+                <button @click="hide.submit()" class="px-4 py-2 text-blue-100 bg-blue-500 rounded-lg mr-2">Dấu dữ liệu!</button>
+                <button @click="hide.clear()" class="px-4 py-2 text-gray-800 rounded-lg">Làm sạch</button>
+              </div>
+
+              <div class="mb-4">
+                <label class="block mr-2" for="i03">Kết quả:</label>
+                <div x-text="hide.result" class="w-full h-32 overflow-scroll px-2 py-2 bg-gray-200 text-gray-800 rounded-lg select-all break-all" id="i03"></div>
+              </div>
+            </div>
+          </div>
+
+          <div x-show="tab == 'encrypt'">
+            <h1 class="px-4 py-4 text-xl font-bold block border-b border-gray-300">Dấu & mã hóa</h1>
+
+            <div class="m-4">
+              <div class="mb-4">
+                <label class="block mr-2" for="i10">Dữ liệu cần dấu (fingerprint, tin nhắn bí mật,...):</label>
+                <input x-model="encrypt.secretData" class="px-2 py-2 bg-gray-200 text-gray-800 rounded-lg w-64" id="i10" type="text" placeholder="Tấn công lúc bình minh">
+              </div>
+
+              <div class="mb-4">
+                <label class="block mr-2" for="i11">Mật khẩu (mặc định 123456):</label>
+                <input x-model="encrypt.password" class="px-2 py-2 bg-gray-200 text-gray-800 rounded-lg w-64" id="i10" type="password" placeholder="fs0c13ty">
+              </div>
+
+              <div class="mb-4">
+                <label class="block mr-2" for="i01">Nội dung để ẩn giấu dữ liệu vào:</label>
+                <textarea x-model="encrypt.content" class="w-full h-32 px-2 py-2 bg-gray-200 text-gray-800 rounded-lg" id="i12" placeholder="Hôm nay quả thực là một ngày đẹp trời :3 :3"></textarea>
+              </div>
+
+              <div class="mb-4">
+                <button @click="encrypt.submit()" class="px-4 py-2 text-blue-100 bg-blue-500 rounded-lg">Dấu & mã hóa!</button>
+                <button @click="encrypt.clear()" class="px-4 py-2 text-gray-800 rounded-lg">Làm sạch</button>
+              </div>
+
+              <div class="mb-4">
+                <label class="block mr-2" for="i13">Kết quả:</label>
+                <div class="mr-2 text-blue-600" x-text="encrypt.error"></div>
+                <div x-text="encrypt.result" class="w-full h-32 overflow-scroll px-2 py-2 bg-gray-200 text-gray-800 rounded-lg select-all break-all" id="i13"></div>
+              </div>
+            </div>
+          </div>
+
+          <div x-show="tab == 'reveal'">
+            <h1 class="px-4 py-4 text-xl font-bold block border-b border-gray-300">Hiện dữ liệu ẩn</h1>
+
+            <div class="m-4">
+              <div class="mb-4">
+                <label class="block mr-2" for="i21">Nội dung đã ẩn giấu dữ liệu vào:</label>
+                <textarea x-model="reveal.content" class="w-full h-32 px-2 py-2 bg-gray-200 text-gray-800 rounded-lg" id="i22" placeholder="[ZWD][ZWD]Hôm nay quả thực là một ngày đẹp trời :3 :3"></textarea>
+              </div>
+
+              <div class="mb-4">
+                <button @click="reveal.submit()" class="px-4 py-2 text-blue-100 bg-blue-500 rounded-lg">Hiện dữ liệu!</button>
+                <button @click="reveal.clear()" class="px-4 py-2 text-gray-800 rounded-lg">Làm sạch</button>
+              </div>
+
+              <div class="mb-4">
+                <label class="block mr-2" for="i13">Kết quả:</label>
+                <div x-text="reveal.result" class="w-full h-32 px-2 py-2 bg-gray-200 text-gray-800 rounded-lg select-all overflow-scroll break-all" id="i23"></div>
+              </div>
+            </div>
+          </div>
+
+          <div x-show="tab == 'decrypt'">
+            <h1 class="px-4 py-4 text-xl font-bold block border-b border-gray-300">Giải mã</h1>
+
+            <div class="m-4">
+              <div class="mb-4">
+                <label class="block mr-2" for="i31">Mật khẩu:</label>
+                <input x-model="decrypt.password" class="px-2 py-2 bg-gray-200 text-gray-800 rounded-lg w-64" id="i10" type="password" placeholder="fs0c13ty">
+              </div>
+
+              <div class="mb-4">
+                <label class="block mr-2" for="i01">Nội dung đã ẩn giấu dữ liệu vào:</label>
+                <textarea x-model="decrypt.content" class="w-full h-32 px-2 py-2 bg-gray-200 text-gray-800 rounded-lg" id="i32" placeholder="Hôm nay quả thực là một ngày đẹp trời :3 :3"></textarea>
+              </div>
+
+              <div class="mb-4">
+                <button @click="decrypt.submit()" class="px-4 py-2 text-blue-100 bg-blue-500 rounded-lg">Giải mã!</button>
+                <button @click="decrypt.clear()" class="px-4 py-2 text-gray-800 rounded-lg">Làm sạch</button>
+              </div>
+
+              <div class="mb-4">
+                <label class="block mr-2" for="i13">Kết quả:</label>
+                <div x-text="decrypt.result" class="w-full h-32 px-2 py-2 bg-gray-200 text-gray-800 rounded-lg select-all overflow-scroll break-all" id="i33"></div>
+              </div>
+            </div>
+          </div>
+
+        </main>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
+    <script>
+    function data() {
+      return {
+        tab: 'hide',
+        hide: {
+          secretData: 'Tấn công lúc bình minh',
+          content: 'Hôm nay quả là một ngày đẹp trời :3 :3',
+          result: '',
+          submit () {
+            const converted = convertString(this.secretData)
+            this.result = `‎${converted}‏${this.content}`
+          },
+          clear () {
+            this.secretData = ''
+            this.content = ''
+            this.result = ''
+          }
+        },
+        encrypt: {
+          secretData: 'Tấn công lúc bình minh',
+          password: '123456',
+          content: 'Hôm nay quả là một ngày đẹp trời :3 :3',
+          result: '',
+          error: '',
+          async submit () {
+            try {
+              // Tạo khóa
+              let saltBuffer = getRandomArrayBuffer(32);
+              const iterations = 100000;
+              let keyMaterial = await getKeyMaterial(this.password);
+              let key = await getKey(saltBuffer, keyMaterial, iterations);
+
+              // Mã hóa
+              let dataBuffer = new TextEncoder().encode(this.secretData);
+              let ivBuffer = getRandomArrayBuffer(12);
+              let encryptedBuffer = await encryptMessage(dataBuffer, key, ivBuffer);
+
+              const encryptedData = JSON.stringify({
+                salt: byteArrToHexString(saltBuffer),
+                iterations: iterations,
+                iv: byteArrToHexString(ivBuffer),
+                encryptedData: byteArrToHexString(encryptedBuffer)
+              })
+
+              console.log(encryptedData)
+
+              const converted = convertString(encryptedData)
+              console.log(converted)
+              this.result = `‎${converted}‏${this.content}`
+            } catch (e) {
+              this.error = e
+              console.log(e)
+            }
+          },
+          clear () {
+            this.secretData = ''
+            this.password = ''
+            this.content = ''
+            this.result = ''
+            this.error = ''
+          }
+        },
+        reveal: {
+          content: '',
+          result: '',
+          submit () {
+            const regex = /‎(.*?)‏/g;
+            const matches = this.content.matchAll(regex);
+            const matchesArr = [...matches]
+
+            if (matchesArr) {
+              const results = []
+              matchesArr.forEach((match) => {
+                results.push(convertBackString(match[1]))
+              })
+
+              this.result = results.join('\n\n')
+            } else {
+              this.result = ''
+            }
+          },
+          clear () {
+            this.content = ''
+            this.result = ''
+          }
+        },
+        decrypt: {
+          password: '',
+          content: '',
+          result: '',
+          error: '',
+          async submit () {
+            const regex = /‎(.*?)‏/g;
+            const matches = this.content.matchAll(regex);
+            const matchesArr = [...matches]
+
+            if (matchesArr) {
+              const results = []
+              await asyncForEach(matchesArr, async (match) => {
+                const unconverted = convertBackString(match[1])
+                try {
+                  const obj = JSON.parse(unconverted)
+
+                  if (obj.hasOwnProperty('encryptedData')) {
+                    try {
+                      const result = await doDecrypt(obj, this.password)
+
+                      results.push(result)
+                    } catch (e) {
+                      results.push('[Sai mật khẩu]')
+                      console.log(e)
+                    }
+                  } else {
+                    results.push('[Không bị mã hóa]')
+                  }
+                } catch (e) {
+                  results.push('[Không bị mã hóa]')
+                  console.log(e)
+                }
+              })
+
+              this.result = results.join('\n\n')
+            } else {
+              this.result = ''
+            }
+          },
+          clear () {
+            this.password = ''
+            this.content = ''
+            this.result = ''
+            this.error = ''
+          }
+        }
+      }
+    }
+
+    const convertString = (str) => {
+      return binArrToZWCString(byteArrToBinArr(strToByteArr(str)))
+    }
+
+    const convertBackString = (zwdStr) => {
+      const binArr = zwdStr
+        .split('')
+        .map(c => {
+          if (c == '‌') return '0'
+          if (c == '​') return '1'
+        })
+      const byteArr = chunk(binArr, 8)
+        .map(bitArr => bitArr.join(''))
+        .map(bitStr => parseInt(bitStr, 2))
+      const bufferView = new Uint8Array(byteArr)
+      return new TextDecoder().decode(bufferView)
+    }
+
+    const doDecrypt = async (encObj, password) => {
+      // Parse đoạn JSON chứa các thông tin
+      let dataBuffer = hexStrToByteArray(encObj.encryptedData);
+      let saltBuffer = hexStrToByteArray(encObj.salt);
+      let ivBuffer = hexStrToByteArray(encObj.iv);
+      const iterations = encObj.iterations;
+
+      // Tạo key
+      let keyMaterial = await getKeyMaterial(password);
+      let key = await getKey(saltBuffer, keyMaterial, iterations);
+
+      // Giải mã
+      const decryptedBuffer = await decryptMessage(dataBuffer, key, ivBuffer);
+      return new TextDecoder("utf-8").decode(decryptedBuffer);
+    }
+
+    const strToByteArr = (str) => {
+      return new TextEncoder().encode(str)
+    }
+
+    const byteArrToBinArr = (byteArr) => {
+      const bufferView = new Uint8Array(byteArr)
+      return Array.from(bufferView)
+                  .map((dec) => decimalToBinary(dec).split(''))
+                  .flat()
+    }
+
+    const binArrToZWCString = (binArr) => {
+      return binArr
+        .map(bin => {
+          if (bin == 0) return '‌'
+          if (bin == 1) return '​'
+        })
+        .join('')
+    }
+
+    const decimalToBinary = (d) => {
+      var b = ''
+      for (var i = 0; i < 8; i++) {
+        b = (d%2) + b
+        d = Math.floor(d/2)
+      }
+      return b
+    }
+
+    const chunk = (array, size) => {
+      const chunked_arr = [];
+      let index = 0;
+      while (index < array.length) {
+        chunked_arr.push(array.slice(index, size + index));
+        index += size;
+      }
+      return chunked_arr;
+    }
+
+    const byteArrToHexString = byteArray => {
+      var bufferView = new Uint8Array(byteArray);
+      return Array.prototype.map.call(bufferView, function (byte) {
+        return ("0" + (byte & 0xFF).toString(16)).slice(-2);
+      }).join("");
+    };
+
+    const hexStrToByteArray = hexString => {
+      var result = [];
+      while (hexString.length >= 2) {
+        result.push(parseInt(hexString.substring(0, 2), 16));
+        hexString = hexString.substring(2, hexString.length);
+      }
+      return new Uint8Array(result);
+    };
+
+    const getRandomArrayBuffer = bytesNumber => {
+      let byte = new Uint8Array(bytesNumber);
+      crypto.getRandomValues(byte);
+      return byte;
+    };
+
+    const getKeyMaterial = async (passwordString) => {
+      const passwordBuffer = new TextEncoder().encode(passwordString);
+      return await crypto.subtle.importKey("raw", passwordBuffer, { name: "PBKDF2" }, false, ["deriveBits", "deriveKey"]);
+    };
+
+    const getKey = async (saltBuffer, keyMaterial, iterations) => {
+      let params = {
+        name: "PBKDF2",
+        salt: saltBuffer,
+        iterations: 100000,
+        hash: "SHA-256"
+      };
+      return await crypto.subtle.deriveKey(
+        params,
+        keyMaterial,
+        { name: "AES-GCM", length: 256 },
+        true,
+        ["encrypt", "decrypt"]
+      );
+    };
+
+    const encryptMessage = async (dataBuffer, key, ivBuffer) => {
+      return await crypto.subtle.encrypt(
+        {
+          name: "AES-GCM",
+          iv: ivBuffer
+        },
+        key,
+        dataBuffer
+      );
+    }
+
+    const decryptMessage = async (encryptedDataBuffer, key, ivBuffer) => {
+      return await crypto.subtle.decrypt(
+        {
+          name: "AES-GCM",
+          iv: ivBuffer
+        },
+        key,
+        encryptedDataBuffer
+      );
+    }
+
+    const asyncForEach = async (array, callback) => {
+      for (let index = 0; index < array.length; index++) {
+        await callback(array[index], index, array)
+      }
+    }
+    </script>
+  </body>
+</html>
